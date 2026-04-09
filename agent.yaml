@@ -4,7 +4,7 @@ version: 1.0.0
 description: "The agent that interviews your codebase, writes in its voice, and evolves with every commit."
 
 model:
-  preferred: claude-sonnet-4-6
+  preferred: anthropic:claude-sonnet-4-5-20250929
 
 skills:
   - interview-project
