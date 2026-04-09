@@ -1,0 +1,7 @@
+memory/wellbeing.md
+memory/sessions.log
+memory/errors.md
+node_modules/
+.env
+.env.local
+*.log

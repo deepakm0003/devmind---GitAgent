@@ -1,0 +1,49 @@
+spec_version: "0.1.0"
+name: devmind
+version: 1.0.0
+description: "The agent that interviews your codebase, writes in its voice, and evolves with every commit."
+
+model:
+  preferred: claude-sonnet-4-6
+
+skills:
+  - interview-project
+  - build-mental-model
+  - write-feature
+  - challenge-decision
+  - negotiate-contract
+  - detect-drift
+  - burnout-radar
+  - heal-memory
+
+delegation:
+  mode: auto
+  sub_agents:
+    - name: reviewer
+      path: agents/reviewer/agent.yaml
+      invoke_on: post_write
+    - name: memory-curator
+      path: agents/memory-curator/agent.yaml
+      invoke_on: post_heal
+
+runtime:
+  max_turns: 80
+  timeout: 300
+
+hooks:
+  config: hooks/hooks.yaml
+
+memory:
+  path: memory/MEMORY.md
+  auto_load: true
+  auto_commit: true
+
+knowledge:
+  path: knowledge/
+
+tags:
+  - hackathon
+  - developer-experience
+  - memory
+  - git-native
+  - codebase-intelligence

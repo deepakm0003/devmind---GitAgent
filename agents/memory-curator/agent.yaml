@@ -1,0 +1,27 @@
+spec_version: "0.1.0"
+name: devmind-curator
+version: 1.0.0
+description: "Performs consistency pass on MEMORY.md after heal-memory runs. Reads for internal contradictions only. Reports issues — does not modify."
+
+model:
+  preferred: claude-sonnet-4-6
+
+skills: []
+
+delegation:
+  mode: none
+
+runtime:
+  max_turns: 10
+  timeout: 30
+
+memory:
+  path: ../../memory/MEMORY.md
+  auto_load: true
+  auto_commit: false
+
+tags:
+  - sub-agent
+  - memory
+  - consistency
+  - curator

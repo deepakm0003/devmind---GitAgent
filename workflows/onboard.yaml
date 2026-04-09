@@ -1,0 +1,57 @@
+name: full-onboard
+description: "Full onboarding workflow for a new project. Runs the complete sequence: check for existing memory, conduct interview, build mental model, and show initialization summary."
+version: "1.0.0"
+
+steps:
+
+  - id: check-existing-memory
+    name: Check Existing Memory
+    description: "Checks whether MEMORY.md exists and has a completed interview section. If yes, skips to show-summary. If no, proceeds to interview."
+    action: read
+    target: memory/MEMORY.md
+    on_success:
+      check: contains "## Interview Complete"
+      if_true: jump to show-summary
+      if_false: next
+    on_missing: next
+
+  - id: interview-project
+    name: Interview Project
+    description: "Runs the structured 7-question interview to establish foundational understanding. Writes answers to memory/MEMORY.md."
+    action: invoke-skill
+    skill: interview-project
+    on_success: next
+    on_failure:
+      action: escalate
+      message: "Interview failed to complete. Check memory/errors.md for details."
+
+  - id: build-mental-model
+    name: Build Mental Model
+    description: "Scans project files to detect tech stack, naming conventions, test patterns, and current WIP. Writes to knowledge/project-decisions.md."
+    action: invoke-skill
+    skill: build-mental-model
+    on_success: next
+    on_failure:
+      action: warn
+      message: "Mental model scan encountered issues. Proceeding with partial knowledge — check knowledge/project-decisions.md."
+
+  - id: show-summary
+    name: Show Initialization Summary
+    description: "Outputs a human-readable summary of what devmind now knows about the project."
+    action: summarize
+    template: |
+      devmind is now fully initialized. ✅
+
+      I know:
+        → {{ count_entries("memory/MEMORY.md", "Architecture Decisions") }} architecture decisions
+        → {{ count_entries("memory/MEMORY.md", "Anti-Patterns") }} constraints (things I must never do)
+        → {{ count_entries("memory/MEMORY.md", "Failed Experiments") }} failed experiments to avoid repeating
+        → Tech stack: {{ get_value("knowledge/project-decisions.md", "Tech Stack") }}
+        → Naming convention: {{ get_value("knowledge/project-decisions.md", "Naming Conventions") }}
+
+      I'm ready to build. What's first?
+    on_success: complete
+
+output:
+  format: human-readable
+  surface: session

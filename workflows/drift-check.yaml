@@ -1,0 +1,78 @@
+name: post-write-check
+description: "Runs after every write-feature invocation. Detects drift against established conventions and memory. If drift is found, presents the drift report and awaits developer decision before completing the session."
+version: "1.0.0"
+
+trigger:
+  after_skill: write-feature
+  mode: automatic
+
+steps:
+
+  - id: detect-drift
+    name: Detect Drift
+    description: "Analyzes newly written files against MEMORY.md anti-patterns and project-decisions.md conventions."
+    action: invoke-skill
+    skill: detect-drift
+    on_success:
+      check: drift_found
+      if_true: next
+      if_false: jump to clean-complete
+    on_failure:
+      action: warn
+      message: "Drift check encountered an error. Review manually before committing."
+      jump_to: complete
+
+  - id: present-drift-report
+    name: Present Drift Report
+    description: "Surfaces the drift report from knowledge/drift-log.md to the developer with full context."
+    action: read-and-surface
+    target: knowledge/drift-log.md
+    filter: latest-entry
+    surface: session
+    output_template: |
+      ⚠️ Drift detected after write-feature.
+
+      {{ drift_report_content }}
+
+      What would you like to do?
+      1. Fix it now — I'll revise the affected files
+      2. Log as conscious exception — tell me why this is intentional
+      3. Update the convention — tell me the new rule
+    on_success: next
+
+  - id: await-developer-decision
+    name: Await Developer Decision
+    description: "Waits for developer to choose how to handle the detected drift. Session does not complete until a decision is made."
+    action: await-input
+    prompt: "Please choose 1 (fix), 2 (exception), or 3 (update convention):"
+    valid_inputs: ["1", "2", "3", "fix", "exception", "update"]
+    on_input_1:
+      action: invoke-skill
+      skill: write-feature
+      context: "Revise only the flagged sections from the drift report."
+      jump_to: detect-drift  # Re-run drift check after revision
+    on_input_2:
+      action: prompt
+      message: "What is the reasoning for this exception? I'll log it so future sessions understand why."
+      then: append-to-memory
+      jump_to: complete
+    on_input_3:
+      action: prompt
+      message: "What is the new convention rule? I'll update knowledge/project-decisions.md."
+      then: update-project-decisions
+      jump_to: complete
+    on_timeout:
+      action: warn
+      message: "No decision received. Drift report is in knowledge/drift-log.md. Please review before pushing."
+      jump_to: complete
+
+  - id: clean-complete
+    name: Clean Complete
+    description: "No drift found — write-feature session is complete."
+    action: output
+    message: "✅ Post-write check complete. No drift detected. Your code matches the project's established patterns."
+    on_success: complete
+
+output:
+  format: human-readable
+  surface: session

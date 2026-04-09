@@ -1,0 +1,31 @@
+spec_version: "0.1.0"
+name: devmind-reviewer
+version: 1.0.0
+description: "Reviews code written by devmind against the project's own MEMORY.md and conventions. Does not check for correctness — checks for belonging."
+
+model:
+  preferred: claude-sonnet-4-6
+
+skills:
+  - review-output
+
+delegation:
+  mode: none
+
+runtime:
+  max_turns: 20
+  timeout: 60
+
+memory:
+  path: ../../memory/MEMORY.md
+  auto_load: true
+  auto_commit: false
+
+knowledge:
+  path: ../../knowledge/
+
+tags:
+  - sub-agent
+  - reviewer
+  - code-quality
+  - memory-anchored
