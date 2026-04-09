@@ -4,7 +4,7 @@ version: 1.0.0
 description: "Reviews code written by devmind against the project's own MEMORY.md and conventions. Does not check for correctness — checks for belonging."
 
 model:
-  preferred: anthropic:claude-sonnet-4-5-20250929
+  preferred: groq:llama-3.3-70b-versatile
 
 skills:
   - review-output

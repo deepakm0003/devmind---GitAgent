@@ -4,7 +4,7 @@ version: 1.0.0
 description: "Performs consistency pass on MEMORY.md after heal-memory runs. Reads for internal contradictions only. Reports issues — does not modify."
 
 model:
-  preferred: anthropic:claude-sonnet-4-5-20250929
+  preferred: groq:llama-3.3-70b-versatile
 
 skills: []
 
