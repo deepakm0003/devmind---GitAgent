@@ -1,39 +1,24 @@
-version: "1.0"
 hooks:
-
   on_session_start:
-    name: load-memory
-    script: hooks/load-memory.sh
-    description: "Reads MEMORY.md into active context and logs session start. Runs before any skill is invoked."
-    on_failure: warn
-    env:
-      MEMORY_PATH: memory/MEMORY.md
-      SESSION_LOG_PATH: memory/sessions.log
+    - script: scripts/load-memory.sh
+      description: "Reads MEMORY.md into context and logs session start. Runs before any skill is invoked."
+      timeout: 10
+      fail_open: true
 
   pre_tool_use:
-    name: guard-memory
-    script: hooks/guard-memory.sh
-    description: "Intercepts any direct write to memory/MEMORY.md. Blocks writes not originating from interview-project or heal-memory skills. Enforces role separation — blocks builder role from writing memory files."
-    on_failure: block
-    env:
-      ALLOWED_WRITERS: "interview-project,heal-memory"
-      MEMORY_PATH: memory/MEMORY.md
-      DUTIES_PATH: DUTIES.md
+    - script: scripts/guard-memory.sh
+      description: "Blocks any direct MEMORY.md write not originating from interview-project or heal-memory. Enforces role SOD."
+      timeout: 5
+      fail_open: false
 
   post_response:
-    name: commit-memory
-    script: hooks/commit-memory.sh
-    description: "After every session response, checks if MEMORY.md was modified. If modified, auto-commits with a structured message including date and entry count delta."
-    on_failure: warn
-    env:
-      MEMORY_PATH: memory/MEMORY.md
-      COMMIT_PREFIX: "chore(devmind): memory update"
+    - script: scripts/commit-memory.sh
+      description: "If MEMORY.md was modified this session, auto-commits with structured message including date and entry count."
+      timeout: 15
+      fail_open: true
 
   on_error:
-    name: escalate
-    script: hooks/escalate.sh
-    description: "On any unhandled error, logs the full error context to memory/errors.md and surfaces a developer-friendly summary in the active session."
-    on_failure: log_only
-    env:
-      ERROR_LOG_PATH: memory/errors.md
-      NOTIFY_DEVELOPER: "true"
+    - script: scripts/escalate.sh
+      description: "Logs error to memory/errors.md and surfaces a developer-friendly summary in the active session."
+      timeout: 10
+      fail_open: true

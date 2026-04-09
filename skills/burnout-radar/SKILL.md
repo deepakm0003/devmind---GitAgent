@@ -2,7 +2,6 @@
 name: burnout-radar
 description: "Silently analyzes git commit patterns from the last 30 days for signals of developer stress or burnout. Writes private observations to memory/wellbeing.md (gitignored). Never surfaces findings to teammates or external systems."
 allowed-tools: Read Write Bash
-role: curator
 ---
 
 # Burnout Radar

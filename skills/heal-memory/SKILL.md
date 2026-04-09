@@ -2,7 +2,6 @@
 name: heal-memory
 description: "Audits MEMORY.md for duplicates, explicit contradictions, and stale context. Presents conflicts to the developer for resolution. Archives the old MEMORY.md and writes a clean, consistent version. Invokes memory-curator sub-agent for final consistency pass."
 allowed-tools: Read Write
-role: curator
 ---
 
 # Heal Memory

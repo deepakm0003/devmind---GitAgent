@@ -2,7 +2,6 @@
 name: challenge-decision
 description: "Checks any proposed action against logged constraints in MEMORY.md and project-decisions.md. Returns CLEAR if no conflict, or stops and presents a structured conflict resolution to the developer if a violation is found."
 allowed-tools: Read Write
-role: builder
 ---
 
 # Challenge Decision

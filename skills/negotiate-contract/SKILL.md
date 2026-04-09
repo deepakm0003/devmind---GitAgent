@@ -2,7 +2,6 @@
 name: negotiate-contract
 description: "Enables two devmind instances in different repositories to negotiate a shared API contract through a structured, turn-based written negotiation. Produces an OpenAPI-compatible contract in knowledge/api-contract.md on mutual acceptance."
 allowed-tools: Read Write
-role: negotiator
 ---
 
 # Negotiate Contract

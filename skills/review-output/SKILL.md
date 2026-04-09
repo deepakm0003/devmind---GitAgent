@@ -2,7 +2,6 @@
 name: review-output
 description: "Reviews code written by devmind against the project's own MEMORY.md and established conventions. Does not review for correctness — reviews for belonging. Outputs APPROVED or NEEDS REVISION with specific, memory-anchored feedback."
 allowed-tools: Read Write
-role: reviewer
 ---
 
 # Review Output

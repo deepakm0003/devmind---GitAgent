@@ -2,7 +2,6 @@
 name: interview-project
 description: "Structured onboarding interview that builds the agent's foundational understanding of a project before any code is written. Asks exactly 7 questions about the project's purpose, users, undocumented decisions, anti-patterns, priorities, failed experiments, and definition of done."
 allowed-tools: Read Write
-role: interviewer
 ---
 
 # Interview Project

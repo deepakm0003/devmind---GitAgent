@@ -2,7 +2,6 @@
 name: write-feature
 description: "Writes a new feature in the project's own voice — using naming conventions, dependencies, and patterns already established in the codebase. Validates against memory before writing. Invokes reviewer after writing. Runs detect-drift automatically."
 allowed-tools: Read Write Bash
-role: builder
 ---
 
 # Write Feature

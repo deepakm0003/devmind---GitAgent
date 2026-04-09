@@ -16,30 +16,24 @@ skills:
   - burnout-radar
   - heal-memory
 
+agents:
+  reviewer:
+    description: "Reviews code written by devmind against MEMORY.md and conventions. Checks for belonging, not correctness."
+    delegation:
+      mode: auto
+      triggers:
+        - post_write_feature
+  memory-curator:
+    description: "Performs consistency pass on MEMORY.md after heal-memory runs."
+    delegation:
+      mode: explicit
+
 delegation:
   mode: auto
-  sub_agents:
-    - name: reviewer
-      path: agents/reviewer/agent.yaml
-      invoke_on: post_write
-    - name: memory-curator
-      path: agents/memory-curator/agent.yaml
-      invoke_on: post_heal
 
 runtime:
   max_turns: 80
   timeout: 300
-
-hooks:
-  config: hooks/hooks.yaml
-
-memory:
-  path: memory/MEMORY.md
-  auto_load: true
-  auto_commit: true
-
-knowledge:
-  path: knowledge/
 
 tags:
   - hackathon
@@ -47,3 +41,9 @@ tags:
   - memory
   - git-native
   - codebase-intelligence
+
+metadata:
+  hooks_config: hooks/hooks.yaml
+  burnout_radar: private
+  memory_path: memory/MEMORY.md
+  knowledge_path: knowledge/

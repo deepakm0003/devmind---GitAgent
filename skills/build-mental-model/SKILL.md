@@ -2,7 +2,6 @@
 name: build-mental-model
 description: "Scans the project's actual files to detect tech stack, naming conventions, file organization, testing approach, and current work-in-progress. Writes findings to knowledge/project-decisions.md and appends a log entry to MEMORY.md."
 allowed-tools: Read Write Bash
-role: interviewer
 ---
 
 # Build Mental Model

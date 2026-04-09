@@ -2,7 +2,6 @@
 name: detect-drift
 description: "Runs after every write-feature invocation. Compares newly written code against MEMORY.md anti-patterns and project-decisions.md conventions. Reports any drift immediately and logs to knowledge/drift-log.md."
 allowed-tools: Read Write Bash
-role: builder
 ---
 
 # Detect Drift
