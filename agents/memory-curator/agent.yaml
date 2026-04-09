@@ -4,7 +4,7 @@ version: 1.0.0
 description: "Performs consistency pass on MEMORY.md after heal-memory runs. Reads for internal contradictions only. Reports issues — does not modify."
 
 model:
-  preferred: google:gemini-2.0-flash
+  preferred: openrouter:openrouter/free
 
 skills: []
 

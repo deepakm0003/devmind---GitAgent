@@ -4,7 +4,7 @@ version: 1.0.0
 description: "The agent that interviews your codebase, writes in its voice, and evolves with every commit."
 
 model:
-  preferred: google:gemini-2.0-flash
+  preferred: openrouter:openrouter/free
   fallback:
     - groq:llama-3.3-70b-versatile
     - anthropic:claude-sonnet-4-5-20250929
