@@ -4,7 +4,7 @@ version: 1.0.0
 description: "Reviews code written by devmind against the project's own MEMORY.md and conventions. Does not check for correctness — checks for belonging."
 
 model:
-  preferred: groq:llama-3.3-70b-versatile
+  preferred: google:gemini-2.0-flash
 
 skills:
   - review-output

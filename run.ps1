@@ -23,9 +23,22 @@ Get-Content $envFile | ForEach-Object {
     }
 }
 
+# Google Gemini needs BOTH env var names (gitclaw checks GOOGLE_API_KEY, pi-ai reads GEMINI_API_KEY)
+if ($env:GOOGLE_API_KEY -and -not $env:GEMINI_API_KEY) {
+    [System.Environment]::SetEnvironmentVariable("GEMINI_API_KEY", $env:GOOGLE_API_KEY, "Process")
+    Write-Host "Loaded: GEMINI_API_KEY (from GOOGLE_API_KEY)" -ForegroundColor DarkGray
+}
+if ($env:GEMINI_API_KEY -and -not $env:GOOGLE_API_KEY) {
+    [System.Environment]::SetEnvironmentVariable("GOOGLE_API_KEY", $env:GEMINI_API_KEY, "Process")
+    Write-Host "Loaded: GOOGLE_API_KEY (from GEMINI_API_KEY)" -ForegroundColor DarkGray
+}
+
 # Validate at least one key is set
 if (-not $env:GROQ_API_KEY -and -not $env:ANTHROPIC_API_KEY -and -not $env:GOOGLE_API_KEY -and -not $env:OPENAI_API_KEY) {
-    Write-Host "ERROR: No API key found in .env — add GROQ_API_KEY (free at https://console.groq.com)" -ForegroundColor Red
+    Write-Host "" -ForegroundColor Red
+    Write-Host "ERROR: No API key found in .env" -ForegroundColor Red
+    Write-Host "Get a FREE Google Gemini key at: https://aistudio.google.com/app/apikey" -ForegroundColor Yellow
+    Write-Host "Then add to .env:  GOOGLE_API_KEY=your_key_here" -ForegroundColor Yellow
     exit 1
 }
 
