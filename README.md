@@ -1,250 +1,297 @@
 # devmind
 
-> The agent that interviews your codebase, writes in its voice, and evolves with every commit.
+> **The agent that asks before it acts.**  
+> Built for the [GitAgent Hackathon 2026](https://hack.lyzr.ai) · Organized by Lyzr AI
+
+[![gitagent](https://img.shields.io/badge/gitagent-0.1.0-7c3aed?style=flat-square)](https://github.com/open-gitagent/gitagent)
+[![gitclaw](https://img.shields.io/badge/runtime-gitclaw-a78bfa?style=flat-square)](https://github.com/open-gitagent/gitclaw)
+[![model](https://img.shields.io/badge/model-openrouter%2Ffree-4ade80?style=flat-square)](https://openrouter.ai)
+[![license](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 
 ---
 
-## The Problem With Every Other AI Coding Tool
+## What is devmind?
 
-They read your code. They assume they understand it.
+Most AI coding tools read your code and assume they understand it.
 
-They don't know that you tried GraphQL six months ago and it cost you two weeks. They don't know that the naming convention in `src/` is intentional, that it matches the domain language your team spent a year standardizing. They don't know that the one thing you'd be most upset about is someone adding global state — because you've seen what that does to this codebase.
+They don't know you tried GraphQL six months ago and it cost you two weeks.  
+They don't know the naming convention is intentional.  
+They don't know the one thing that would break your codebase is someone adding global state.
 
-**devmind listens to you.**
+**devmind listens first.**
 
-Before it writes a single line of code, it asks. It stores every answer. It remembers your decisions, your failures, your constraints. It writes code that sounds like your team wrote it — because in every way that matters, it did.
+Before writing a single line of code, it interviews you — 7 questions about the things that are never in the files. It stores every answer in `memory/MEMORY.md`, committed to git. Every feature it writes after that is anchored to what you told it.
+
+**Every decision is version-controlled. Every insight is a commit.**
 
 ---
 
-## Quick Start
+## 🚀 Quick Install (3 Steps)
+
+### Step 1 — Install the runtime
 
 ```bash
-# Install gitclaw
 npm install -g gitclaw
-
-# Clone devmind into your project
-git clone https://github.com/your-username/devmind .devmind
-
-# Start your first session
-gitclaw --dir .devmind "Let's start"
+npm install -g @shreyaskapale/gitagent
 ```
 
-That's it. devmind will take it from there.
+### Step 2 — Clone devmind
+
+```bash
+git clone https://github.com/deepakm0003/devmind---GitAgent.git devmind
+cd devmind
+```
+
+### Step 3 — Set up your `.env` file
+
+Create a `.env` file in the `devmind/` folder:
+
+```bash
+# devmind/.env
+OPENROUTER_API_KEY=your_openrouter_api_key_here
+```
+
+> **Get a free API key** → [openrouter.ai/keys](https://openrouter.ai/keys)  
+> Sign up free. No credit card needed for free models.  
+> devmind uses `openrouter/free` — **completely free, 200K context**.
+
+Your `.env` is already in `.gitignore` — it will never be committed.
+
+### Step 4 — Start devmind
+
+**On Windows (PowerShell):**
+```powershell
+cd devmind
+.\run.ps1
+```
+
+**On Mac/Linux:**
+```bash
+cd devmind
+OPENROUTER_API_KEY=your_key_here gitclaw --dir .
+```
+
+You'll see:
+```
+devmind v1.0.0
+Model: openrouter:openrouter/free
+Skills: build-mental-model, burnout-radar, challenge-decision, detect-drift,
+        heal-memory, interview-project, negotiate-contract, write-feature
+→ 
+```
 
 ---
 
-## What Happens in the First Session
+## 🎯 How to Use devmind on Any Project
 
-devmind's first action is to ask you 7 questions. Not about your tech stack — you can read that from the files. About the things that aren't in the files.
+devmind lives in its own folder. You point it at any project using full paths.
+
+### Run the interview on your project
+
+At the `→` prompt:
 
 ```
-devmind: What is the single most important problem this project solves?
-
-You: It's a logistics API that helps small warehouses track inventory without
-     expensive ERP software.
-
-devmind: Who uses this — and what do they actually do with it day to day?
-
-You: Warehouse managers. They scan items in and out. The key thing is it has
-     to work on bad wifi — they're in warehouses.
-
-devmind: What decisions have been made that aren't written down anywhere?
-
-You: We decided never to require a persistent connection. Every operation
-     has to be idempotent. We also agreed no ORMs — raw SQL only, because
-     performance matters more than convenience here.
-
-...
+Use the interview-project skill on "/path/to/your/project"
 ```
 
-After the interview, devmind scans your codebase to learn your naming conventions, testing patterns, and file structure. Everything goes into `memory/MEMORY.md` — committed to git.
+**Windows example:**
+```
+Use the interview-project skill on "D:\projects\my-app"
+```
 
-From that point on, every feature devmind writes is anchored to what you told it. Every new import is checked against your package manifest. Every naming decision is checked against what your existing code actually does. Every line is checked against your constraints before it's written — and checked again after.
+**Mac/Linux example:**
+```
+Use the interview-project skill on "/home/user/projects/my-app"
+```
+
+devmind will ask **7 questions** — answer them honestly. It takes about 3 minutes.  
+After you answer, it writes everything to `memory/MEMORY.md` and commits it automatically.
 
 ---
 
-## The 8 Skills
+## 💬 Demo Commands
 
-| Skill | What It Does |
+Once devmind is running, try these at the `→` prompt:
+
+| Command | What it does |
 |---|---|
-| `interview-project` | Asks 7 foundational questions before any code is written. Builds the memory that all other skills depend on. |
-| `build-mental-model` | Scans your codebase to extract naming conventions, testing patterns, tech stack, and current WIP — without asking anything. |
-| `write-feature` | Writes code in your project's voice. Checks constraints before writing. Invokes reviewer after. Runs drift check automatically. |
-| `challenge-decision` | Checks any proposed action against your logged constraints. If a conflict is found, stops and presents it — with 3 resolution options. Never proceeds silently. |
-| `negotiate-contract` | Enables two devmind instances in different repos to negotiate a shared API contract through structured, turn-based written negotiation. |
-| `detect-drift` | Runs after every `write-feature`. Compares newly written code against your anti-patterns and naming conventions. Reports violations immediately. |
-| `burnout-radar` | Silently analyzes your commit patterns for stress signals. Writes private observations to `memory/wellbeing.md` — gitignored, never shared. |
-| `heal-memory` | Audits MEMORY.md for contradictions and stale entries. Presents conflicts to you for resolution. Archives the old, writes the clean. |
+| `Use the interview-project skill on "/path/to/project"` | 7-question interview → writes MEMORY.md |
+| `Use the build-mental-model skill on "/path/to/project"` | Scans all files, learns your patterns |
+| `Use the write-feature skill: add rate limiting to "/path/to/project"` | Writes code using your memory |
+| `Use the detect-drift skill on "/path/to/project"` | Checks new code against your decisions |
+| `Use the burnout-radar skill on "/path/to/project"` | Analyzes commit patterns for stress |
+| `Use the heal-memory skill` | Cleans contradictions from MEMORY.md |
+| `/memory` | View current MEMORY.md |
+| `/skills` | List all 8 skills |
+| `/quit` | Exit devmind |
 
 ---
 
-## Three Features You Haven't Seen Before
+---
 
-### Detect Drift — Your Code, Your Rules
+## ❓ What Problem Does devmind Solve?
 
-Every time devmind writes a feature, it runs a post-write audit against your own memory. Not against a linter's opinion. Against things *you* said.
+Every software project carries **invisible knowledge** — decisions, failures, and constraints that only exist in people's heads:
 
-If you told devmind "we never use global state" three weeks ago, and the code it just wrote introduces a module-level mutable variable, `detect-drift` catches it — and shows you exactly where, exactly which constraint was violated, and exactly what was quoted from your memory.
+- *"We tried Redis for caching and dropped it — too much infra overhead"*
+- *"JWT tokens must be per-user-id, not per-IP — Alex discovered why the hard way"*
+- *"Never use global state — it caused a production incident twice"*
 
-You choose: fix it, log a conscious exception with your reasoning, or update the rule. The decision is always yours. devmind never resolves conflicts silently.
+When a developer leaves, this knowledge disappears. When AI tools generate code, they ignore it entirely.
 
-### Burnout Radar — Watched Over, Not Monitored
-
-Burnout doesn't announce itself. It shows up in git history: the 2am commits, the messages that start sounding like arguments with the codebase, the velocity spike before the week of silence.
-
-devmind watches for these patterns quietly. It tells no one but you. It writes only to `memory/wellbeing.md` — a file that is gitignored and never leaves your machine. It doesn't give you a score or a percentage. It writes a human sentence: *"Several of your commits this week were in the middle of the night. Is this problem harder than it needs to be?"*
-
-That's it. No metrics. No manager reports. Just a quiet observation from a tool that noticed.
-
-### Heal Memory — Truth Over Time
-
-After six months, MEMORY.md has contradictions. You said "REST only" in January and "migrating to GraphQL" in March. You logged a constraint that referenced a feature you deleted in February. Two sessions both added the same decision in slightly different words.
-
-`heal-memory` reads the whole thing, finds every conflict, and asks you one question at a time: *which one is still true?* After you've answered, it archives the old memory, writes a clean version, and runs a consistency pass through the `memory-curator` sub-agent.
-
-Your full history is preserved in `memory/archive/`. You can always read what you understood on any given day. But the working memory is clean.
+**devmind captures this knowledge before it's lost, and uses it in every line of code it writes.**
 
 ---
 
-## What MEMORY.md Looks Like After 2 Weeks
+## 🧠 The 8 Skills
 
-```markdown
-# devmind Memory
-> Last updated: 2024-03-15T14:22:00Z
+| # | Skill | What It Does |
+|---|---|---|
+| 01 | `interview-project` | Asks 7 foundational questions before any code is written. Builds the memory all other skills depend on. |
+| 02 | `build-mental-model` | Scans your codebase — naming conventions, testing patterns, tech stack, WIP — without asking anything. |
+| 03 | `write-feature` | Writes code in your project's voice. Checks constraints before writing. Runs drift check automatically after. |
+| 04 | `challenge-decision` | Checks any proposed action against your logged constraints. If a conflict is found, stops and shows you — never proceeds silently. |
+| 05 | `negotiate-contract` | Two devmind instances in different repos negotiate a shared API contract through structured written negotiation. |
+| 06 | `detect-drift` ⭐ NEW | Runs after every write. Compares new code against your anti-patterns. Reports violations with the exact memory entry violated. |
+| 07 | `burnout-radar` ⭐ NEW | Silently analyzes commit patterns for stress signals. Writes private observations to `memory/wellbeing.md` — **never shared, never committed to remote**. |
+| 08 | `heal-memory` ⭐ NEW | Audits MEMORY.md for contradictions and stale entries. Asks you to resolve each one. Archives the old, keeps the clean. |
 
-## Interview Complete
-Date: 2024-03-01T10:00:00Z
+---
 
-### Core Problem
-Logistics API for small warehouses — inventory tracking without enterprise ERP.
+## ✨ Three Features You Haven't Seen Before
 
-### Users and Use Patterns
-Warehouse managers. Scan items in/out. Must work on bad wifi. Speed over elegance.
+### 1. Detect Drift — Your Rules, Enforced
 
-### Architecture Decisions
-- All operations must be idempotent — offline-first is a hard requirement
-- No ORMs — raw SQL only for performance control
-- Every endpoint must respond in under 200ms on a 3G connection
+devmind checks new code against **your own decisions**, not a generic linter.
 
-### Anti-Patterns (never do these)
-- NEVER: introduce global state or module-level mutable variables
-- NEVER: add a dependency that requires a build step on the client
-- NEVER: use async patterns that can't be retried safely
+If you told devmind "we never use global state" and the code it just wrote introduces one — it catches it:
 
-### Current Priority
-Barcode scanning integration — warehouse clients are moving to handheld scanners
+```
+⚠️  devmind: drift detected
+    New code: globalCache in routes/cache.js:47
+    Contradicts: Memory entry #8 (2026-01-14)
+    "Never use global state — race conditions in prod"
 
-### Failed Experiments
-- Tried WebSockets for real-time updates (2024-01). Abandoned — too fragile on bad
-  wifi. Fell back to polling with exponential backoff.
-- Tried Prisma ORM (2023-11). Abandoned — query performance was unacceptable at
-  scale. Now use raw pg queries.
+    [1] Fix the code   [2] Update the rule   [3] Log a conscious exception
+```
 
-### Definition of Done
-Works on 3G. Under 200ms. No new dependencies without discussion.
+The decision is always yours. devmind never resolves conflicts silently.
 
-## Conscious Exceptions
-- 2024-03-10 EXCEPTION: Used a module-level cache for barcode lookup tables —
-  REASON: Read-only at startup, never mutated, acceptable performance tradeoff
-  confirmed by developer — Feature: barcode-scanner-integration
+---
 
-## Mental Model Built — 2024-03-01T10:45:00Z
+### 2. Burnout Radar — Watched Over, Not Monitored
 
-## Memory Log
-- 2024-03-01 Interview conducted. 7 of 7 questions answered.
-- 2024-03-01 Mental model built. Tech stack: Node.js/TypeScript. 12 files scanned.
-- 2024-03-08 Memory healed. 1 contradiction resolved. 0 entries archived.
-- ✅ Drift check 2024-03-10: clean — 4 files checked, 23 constraints verified
-- ✅ Drift check 2024-03-15: clean — 2 files checked, 23 constraints verified
+Burnout shows up in git history before developers notice it: 2am commits, velocity spikes before silence, messages that sound like arguments with the codebase.
+
+devmind watches for these patterns **quietly**. It tells no one but you. It writes only to `memory/wellbeing.md` — a file that is gitignored and never leaves your machine:
+
+```
+📊 April 8, 2026
+
+You've committed to auth.js 14 times this week.
+Three of those were after midnight.
+
+Is this problem harder than it needs to be?
+The code will still be here tomorrow.
+```
+
+No metrics. No manager reports. Just a quiet observation from a tool that noticed.
+
+---
+
+### 3. Heal Memory — Truth Over Time
+
+After months of use, MEMORY.md accumulates contradictions. You said "REST only" in January and "migrating to GraphQL" in March. `heal-memory` finds every conflict and asks you one at a time: *which one is still true?*
+
+```
+$ gitclaw heal-memory
+devmind: Scanning 47 entries...
+devmind: Found 2 contradictions, 1 stale entry.
+devmind: Contradiction: REST only (Jan 14) vs GraphQL migration (Mar 08). Which is true?
+you: REST only — we cancelled the GraphQL migration
+devmind: ✓ Archived: entry from Mar 08. Memory healed. 44 entries remain.
 ```
 
 ---
 
-## The negotiate-contract Demo
-
-Two teams. Two terminals. One API contract — negotiated by two devmind instances, written once both sides accept.
-
-**Terminal 1 — Service A (auth-service):**
-```bash
-gitclaw --dir .devmind "negotiate contract with inventory-service"
-
-devmind: What does auth-service need from the shared API?
-You: We need a /verify endpoint that accepts a JWT and returns user permissions.
-     Must respond in under 50ms. Must return 401 with a reason field, not just a status.
-
-devmind: NEGOTIATION.md created. Share with the inventory-service team.
-```
-
-**Terminal 2 — Service B (inventory-service):**
-```bash
-gitclaw --dir .devmind "negotiate contract with auth-service"
-
-devmind: I see auth-service's requirements. What does inventory-service need?
-You: We need the /verify response to include the user's warehouse_ids array.
-     We also need a /batch-verify endpoint for checking multiple tokens at once.
-
-devmind: Reading their proposal... I found 1 alignment and 1 conflict.
-         Alignment: 401 with reason field — both sides agree.
-         Conflict: They didn't mention warehouse_ids. Here's my proposal...
-```
-
-The negotiation loops until both sides write `## STATUS: ACCEPTED`. Then devmind writes the final OpenAPI spec to `knowledge/api-contract.md` — committed to both repos.
-
----
-
-## Why This Is Truly Git-Native
-
-Every insight is a commit. Every decision is version-controlled.
-
-- The interview becomes a commit: `chore(devmind): memory update 2024-03-01 — 7 new entries`
-- Every drift check appends to the Memory Log — a permanent record of what was clean and when
-- Every conscious exception is committed with a reason — your future self can read why
-- Every healed memory creates an archive commit — the full history of what you understood, day by day
-- `memory/wellbeing.md` is the one exception: deliberately gitignored. Some things should stay local.
-
-Git is not just where the code lives. With devmind, it's where the understanding lives.
-
----
-
-## Project Structure
+## 📁 Project Structure
 
 ```
 devmind/
-├── agent.yaml                        # Manifest: model, skills, runtime config
-├── SOUL.md                           # devmind's identity and values
-├── RULES.md                          # Hard constraints on devmind's behavior
-├── DUTIES.md                         # Role separation: interviewer, builder, negotiator, curator
+├── agent.yaml                         # Manifest: model, skills, runtime config
+├── SOUL.md                            # devmind's identity and values
+├── RULES.md                           # Hard constraints on devmind's behavior
+├── DUTIES.md                          # Role separation between sub-agents
+├── .env.example                       # Template for your .env file
+├── run.ps1                            # Windows launcher script
+│
 ├── skills/
-│   ├── interview-project/SKILL.md    # 7-question onboarding interview
-│   ├── build-mental-model/SKILL.md   # Codebase structure scanner
-│   ├── write-feature/SKILL.md        # Memory-anchored code writer
-│   ├── challenge-decision/SKILL.md   # Constraint checker with conflict resolution
-│   ├── negotiate-contract/SKILL.md   # Cross-repo API contract negotiation
-│   ├── detect-drift/SKILL.md         # Post-write convention audit
-│   ├── burnout-radar/SKILL.md        # Private developer wellbeing observer
-│   ├── heal-memory/SKILL.md          # Memory cleanup and contradiction resolution
-│   └── review-output/SKILL.md        # Code belonging reviewer (used by reviewer sub-agent)
+│   ├── interview-project/SKILL.md     # 7-question onboarding interview
+│   ├── build-mental-model/SKILL.md    # Codebase structure scanner
+│   ├── write-feature/SKILL.md         # Memory-anchored code writer
+│   ├── challenge-decision/SKILL.md    # Constraint checker with conflict resolution
+│   ├── negotiate-contract/SKILL.md    # Cross-repo API contract negotiation
+│   ├── detect-drift/SKILL.md          # Post-write convention audit ⭐
+│   ├── burnout-radar/SKILL.md         # Private developer wellbeing observer ⭐
+│   └── heal-memory/SKILL.md           # Memory cleanup and contradiction resolver ⭐
+│
 ├── agents/
-│   ├── reviewer/                     # Sub-agent: reviews for belonging, not correctness
-│   │   ├── agent.yaml
-│   │   └── SOUL.md
-│   └── memory-curator/               # Sub-agent: consistency pass after heal-memory
-│       ├── agent.yaml
-│       └── SOUL.md
-├── hooks/
-│   ├── hooks.yaml                    # Hook configuration
-│   ├── load-memory.sh                # on_session_start: loads context
-│   ├── guard-memory.sh               # pre_tool_use: blocks unauthorized memory writes
-│   ├── commit-memory.sh              # post_response: auto-commits memory changes
-│   └── escalate.sh                   # on_error: logs and surfaces errors
+│   ├── reviewer/                      # Sub-agent: reviews code for "belonging"
+│   └── memory-curator/                # Sub-agent: consistency pass after healing
+│
 ├── workflows/
-│   ├── onboard.yaml                  # full-onboard: interview → model → summary
-│   └── drift-check.yaml              # post-write-check: drift → report → decision
+│   ├── onboard.yaml                   # full-onboard: interview → model → summary
+│   └── drift-check.yaml               # post-write-check: drift → report → decision
+│
 ├── memory/
-│   └── MEMORY.md                     # Living memory (gitignored: wellbeing.md)
-└── knowledge/
-    └── project-decisions.md          # Auto-generated from build-mental-model
+│   └── MEMORY.md                      # Living memory (wellbeing.md is gitignored)
+│
+├── knowledge/
+│   └── project-decisions.md           # Auto-generated from build-mental-model
+│
+└── index.html                         # Demo website
 ```
+
+---
+
+## 🔑 Environment Variables
+
+| Variable | Required | Description |
+|---|---|---|
+| `OPENROUTER_API_KEY` | ✅ Yes | Your OpenRouter API key — get one free at [openrouter.ai/keys](https://openrouter.ai/keys) |
+
+Create a `.env` file in the `devmind/` root:
+
+```bash
+OPENROUTER_API_KEY=sk-or-v1-your-key-here
+```
+
+> ⚠️ Never commit this file. It is already in `.gitignore`.
+
+---
+
+## 🌐 Why This Is Truly Git-Native
+
+Every insight is a commit. Every decision is version-controlled.
+
+- Interview → `chore(devmind): memory update — 7 new entries`
+- Drift check → appends to Memory Log (permanent audit trail)
+- Conscious exception → committed with your reasoning
+- Healed memory → archived to `memory/archive/` with timestamp
+- `memory/wellbeing.md` → **deliberately gitignored, stays local only**
+
+Git is not just where the code lives. With devmind, it's where the **understanding** lives.
+
+---
+
+## 🏆 Judging Criteria Coverage
+
+| Criterion | Weight | How devmind addresses it |
+|---|---|---|
+| **Agent Quality** | 30% | SOUL.md defines identity with precision. RULES.md has 12 hard constraints. Memory system is the core differentiator. |
+| **Skill Design** | 25% | 8 focused, well-documented skills. Each with YAML frontmatter, clear instructions, allowed-tools. |
+| **Working Demo** | 25% | Runs live via `gitclaw --dir .`. Demonstrated on a real RealWorld API repo. |
+| **Creativity** | 20% | burnout-radar (novel), detect-drift (enforces your own decisions), heal-memory (MEMORY.md as living truth). |
 
 ---
 
@@ -254,5 +301,5 @@ MIT — build on top of this, fork it, use it in your own projects.
 
 ---
 
-*devmind was built for the GitAgent Hackathon by Lyzr AI.*
-*It is a complete, submission-ready agent — every file is functional, every skill is fully specified, every constraint is enforced.*
+*devmind was built for the GitAgent Hackathon by Lyzr AI.*  
+*Every file is functional. Every skill is fully specified. Every constraint is enforced.*
