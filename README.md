@@ -1,5 +1,6 @@
 # devmind
 
+# https://devmind-git-agent.vercel.app/
 > **The agent that asks before it acts.**  
 > Built for the [GitAgent Hackathon 2026](https://hack.lyzr.ai) · Organized by Lyzr AI
 
