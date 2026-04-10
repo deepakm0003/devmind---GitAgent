@@ -26,7 +26,9 @@ Before writing a single line of code, it interviews you — 7 questions about th
 **Every decision is version-controlled. Every insight is a commit.**
 
 ---
-<img width="1898" height="911" alt="image" src="https://github.com/user-attachments/assets/646a2421-4f42-40ab-a511-f6e164a1b9f9" />
+
+<img width="1896" height="914" alt="image" src="https://github.com/user-attachments/assets/3b44556f-4906-45ee-b952-54ac238be7d5" />
+
 
 
 ## 🚀 Quick Install (3 Steps)
